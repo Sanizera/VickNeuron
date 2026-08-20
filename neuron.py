@@ -16,13 +16,23 @@ class Neuron:
 
     def processEntries(self, entries):
         # Soma ponderada
-        sum = self.bias
+        total = self.bias
 
         for x, w in zip(entries, self.weights):
-            sum += x*w
+            total += x*w
         
-        # Ativação
-        output = sigmoid(sum)
+        # Activation
+        output = sigmoid(total)
+
+        # Last Results
+        self.last_entries = entries
+        self.last_output = output
 
         return output
 
+    def backward(self, delta, learnRate):
+        for i in range(len(self.weights)):
+            gradient = delta * self.last_entries[i]
+            self.weights[i] += learnRate * gradient
+
+        self.bias += learnRate * delta
